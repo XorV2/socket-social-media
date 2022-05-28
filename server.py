@@ -48,26 +48,6 @@ def write_to_file(path, file_name, content, mode="a"):
 
 
 # -----------------
-def signup_client(contents):
-    client.send(b"Username(20 characters max) -> ")
-    username = client.recv(20).decode()
-    contents[username] = dict()
-    """
-    receive a maximum of 20 bytes from the client and decoding it
-    storing it in the database as the username, same with the password
-    """
-
-    client.sendall(b"Password(20 characters max) -> ")
-    password = client.recv(20).decode()
-    contents[username]["password"] = password
-
-    data = open_file("db", "users.json")
-
-    client.send(b"Successfully signed up, please log in.")
-    register_page(client, client_address)
-
-
-# -----------------
 def check_client_address(client_address):
     addresses_r = open_file("db", "addresses.json")
 
@@ -154,7 +134,7 @@ def register_page(client, client_address):
     command = client.recv(6).decode()
 
     if command == "signup":
-        signup_client(
+        sign_up(
             client,
             client_address,
             {"open_file": open_file, "register_page": register_page},
