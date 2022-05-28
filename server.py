@@ -158,12 +158,6 @@ def main(client, client_address, username):
 
 
 def register_page(client, client_address):
-    try:
-        blacklists = open_file("db", "blacklists.json")
-    except:
-        write_to_file("db", "blacklists.json", {})
-        login_client(client, client_address)
-
     if client_address in blacklists:
         client.close()
         return -1
