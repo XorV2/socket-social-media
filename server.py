@@ -1,9 +1,10 @@
-from atexit import register
-import socket
-import threading
 import json
+import socket
 import inspect
+import threading
 from warnings import filterwarnings
+from commands.help import help_command
+
 
 """
 the inspect module is the only one i am going to document because i'm not
@@ -116,19 +117,6 @@ def login_client(blacklists):
 # -----------------
 def users_command(client, file):
     ...
-
-
-# -----------------
-def help_command(client, username):
-    client.send(
-        f"""hello {username}, this is the command list:
-
-    help - this menu
-    ... - ...
-    ... - ...
-    
-    """.encode()
-    )
 
 
 # -----------------
