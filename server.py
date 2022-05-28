@@ -158,25 +158,20 @@ def main(client, client_address, username):
 
 
 def register_page(client, client_address):
+    blacklists = open_file("db", "blacklists.json")
+    contents = open_file("db", "users.json")
+
     if client_address in blacklists:
         client.close()
         return -1
-
-    try:
-        contents = open_file("db", "users.json")
-    except:
-        write_to_file("db", "blacklists.json", {})
-        login_client(client, client_address)
 
     client.send(b"signup or login ->")
     command = client.recv(6).decode()
 
     if command == "signup":
-        contents = open_file("db", "users.json")
         signup_client(contents)
 
     elif command == "login":
-        blacklists = open_file("db", "blacklists.json")
         login_client(client, blacklists)
 
     else:
