@@ -78,7 +78,7 @@ def login_client(blacklists):
     users_r = open_file("db", "users.json")
 
     if client_address not in addresses_r:
-        addresses_r[client_address], chances = 0, 0
+        addresses_r[client_address[0]], chances = 0, 0
         content = json.dumps(addresses_r, indent=4)
         write_to_file("db", "addresses.json", content, "w")
 
@@ -172,7 +172,7 @@ def register_page(client, client_address):
         signup_client(contents)
 
     elif command == "login":
-        login_client(client, blacklists)
+        login_client(blacklists)
 
     else:
         client.send(b"Please enter 'signup' or 'login'.")
