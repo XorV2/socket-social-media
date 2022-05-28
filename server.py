@@ -8,6 +8,7 @@ from warnings import filterwarnings
 from commands.help import help_command
 from commands.users import users_command
 
+from db.user import sign_up, log_in
 from db.check import check_credidentials
 
 
@@ -153,7 +154,11 @@ def register_page(client, client_address):
     command = client.recv(6).decode()
 
     if command == "signup":
-        signup_client(contents)
+        signup_client(
+            client,
+            client_address,
+            {"open_file": open_file, "register_page": register_page},
+        )
 
     elif command == "login":
         login_client(client, client_address, blacklists)
