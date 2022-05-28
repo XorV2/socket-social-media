@@ -4,6 +4,7 @@ import inspect
 import threading
 from warnings import filterwarnings
 from commands.help import help_command
+from commands.users import users_command
 
 
 """
@@ -112,11 +113,6 @@ def login_client(blacklists):
 
     client.send(b"logged in successfully.")
     main(client, client_address, username)
-
-
-# -----------------
-def users_command(client, file):
-    ...
 
 
 # -----------------
