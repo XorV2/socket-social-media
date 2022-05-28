@@ -3,6 +3,7 @@ import threading
 import json
 import inspect
 from warnings import filterwarnings
+
 """
 the inspect module is the only one i am going to document because i'm not
 familiar with it and i would assume that alot of other people aren't as
@@ -35,11 +36,12 @@ def help(client, username):
 def open_file(path, file_name):
     with open(f"{path}/{file_name}", "r") as f:
         opened_file = json.load(f)
-    
+
     return opened_file
 
+
 # -----------------
-def write_to_file(path, file_name, content, mode="a"): 
+def write_to_file(path, file_name, content, mode="a"):
     """
     default mode set to append in-case file doesn't exist.
     """
@@ -53,15 +55,15 @@ def check_credidentials(username, password):
 
     if username not in contents:
         return [False, "username doesn't exist"]
-    
+
     if password != contents[username]["password"]:
         return [False, "password doesn't match the username"]
-    
+
     return [True]
 
 
 # -----------------
-def signup_user():
+def signup_client(contents):
     client.send(b"Username(20 characters max) -> ")
     username = client.recv(20).decode()
     contents[username] = dict()
@@ -78,14 +80,15 @@ def signup_user():
 
     client.send(b"Successfully signed up, please log in.")
     login_client(client, client_address)
-   
+
+
 # -----------------
 def users_command(client, file):
     ...
 
 
 # -----------------
-def help(client, username):
+def help_command(client, username):
     client.send(
         f"""hello {username}, this is the command list:
 
@@ -108,8 +111,7 @@ def main(client, client_address, username):
 
     print(f"{client_address} has logged in.")
 
-
-    commands = {"help": help, "users":users}
+    commands = {"help": help_command, "users": users_command}
     file = open_file("db", "users.json")
 
     while True:
@@ -147,22 +149,7 @@ def login_client(client, client_address):
     command = client.recv(6).decode()
 
     if command == "signup":
-        client.send(b"Username(20 characters max) -> ")
-        username = client.recv(20).decode()
-        contents[username] = dict()
-        """
-        receive a maximum of 20 bytes from the client and decoding it
-        storing it in the database as the username, same with the password
-        """
-
-        client.sendall(b"Password(20 characters max) -> ")
-        password = client.recv(20).decode()
-        contents[username]["password"] = password
-
-        data = open_file("db", "users.json")
-
-        client.send(b"Successfully signed up, please log in.")
-        login_client(client, client_address)
+        signup_client(...)
 
     elif command == "login":
         addresses_r = open_file("db", "addresses.json")
@@ -178,7 +165,7 @@ def login_client(client, client_address):
             if chances == 3:
                 blacklists[client_address] = 1
                 content = json.dumps(blacklists, indent=4)
-                write_to_file("db", "blacklisted.json", content , "w")
+                write_to_file("db", "blacklisted.json", content, "w")
 
         client.send(b"Username -> ")
         username = client.recv(20).decode()
@@ -217,4 +204,3 @@ if __name__ == "__main__":
         print(client_address)
         print(f"{client_address} accepted.")
         threading.Thread(target=login_client(client, client_address[0])).start()
-
