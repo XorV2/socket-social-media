@@ -93,7 +93,7 @@ def login_client(blacklists):
     username = client.recv(20).decode()
 
     if username not in users_r:
-        client.send(b"Username not recognised, try again.")
+        client.send(b"Username not recogniseds, try again.")
         login_client(blacklists)
         return None
 
