@@ -77,27 +77,30 @@ def signup_client(contents):
 
 # -----------------
 def check_client_address(client_address):
-    ...
+    addresses_r = open_file("db", "addresses.json")
+
+    if not (client_address in addresses_r):
+        addresses_r[client_address] = {"chances": 0}
+        content = json.dumps(addresses_r, indent=4)
+
+        write_to_file("db", "addresses.json", content, "w")
+        return True
+
+    chances = addresses_r[client_address]["chances"]
+
+    if chances == 3:
+        return False
+    return True
 
 
 # -----------------
 def login_client(client, client_address, blacklists):
+    if not check_client_address:
+        client.close()
+        return None
+    
     addresses_r = open_file("db", "addresses.json")
     users_r = open_file("db", "users.json")
-
-    if not (client_address in addresses_r):
-        clients_chances = addresses_r[client_address]
-        addresses_r[client_address], chances = 0, 0
-
-        content = json.dumps(addresses_r, indent=4)
-        write_to_file("db", "addresses.json", content, "w")
-
-    else:
-        chances = addresses_r[client_address]
-        if chances == 3:
-            blacklists[client_address] = 1
-            content = json.dumps(blacklists, indent=4)
-            write_to_file("db", "blacklisted.json", content, "w")
 
     client.send(b"Username -> ")
     username = client.recv(20).decode()
