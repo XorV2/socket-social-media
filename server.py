@@ -83,6 +83,47 @@ def signup_client(contents):
 
 
 # -----------------
+def login_client(blacklists):
+    addresses_r = open_file("db", "addresses.json")
+    users_r = open_file("db", "users.json")
+
+    if client_address not in addresses_r:
+        addresses_r[client_address], chances = 0, 0
+        content = json.dumps(addresses_r, indent=4)
+        write_to_file("db", "addresses.json", content, "w")
+
+    else:
+        chances = addresses_r[client_address]
+        if chances == 3:
+            blacklists[client_address] = 1
+            content = json.dumps(blacklists, indent=4)
+            write_to_file("db", "blacklisted.json", content, "w")
+
+    client.send(b"Username -> ")
+    username = client.recv(20).decode()
+
+    if username not in users_r:
+        client.send(b"Username invalid, try again.")
+        login_client(client, client_address)
+        return None
+
+    client.send(b"Password -> ")
+    password = client.recv(20).decode()
+
+    if password != users_r[username]["password"]:
+        addresses_r[client_address] += 1
+        content = json.dumps(addresses_r, indent=4)
+        write_to_file("db", "addresses.json", content, "w")
+
+        client.send(b"Password invalid.")
+        login_client(client, client_address)
+        return None
+
+    client.send(b"logged in successfully.")
+    main(client, client_address, username)
+
+
+# -----------------
 def users_command(client, file):
     ...
 
@@ -149,49 +190,16 @@ def login_client(client, client_address):
     command = client.recv(6).decode()
 
     if command == "signup":
-        signup_client(...)
+        contents = open_file("db", "users.json")
+        signup_client(contents)
 
     elif command == "login":
-        addresses_r = open_file("db", "addresses.json")
-        users_r = open_file("db", "users.json")
-
-        if client_address not in addresses_r:
-            addresses_r[client_address], chances = 0, 0
-            content = json.dumps(addresses_r, indent=4)
-            write_to_file("db", "addresses.json", content, "w")
-
-        else:
-            chances = addresses_r[client_address]
-            if chances == 3:
-                blacklists[client_address] = 1
-                content = json.dumps(blacklists, indent=4)
-                write_to_file("db", "blacklisted.json", content, "w")
-
-        client.send(b"Username -> ")
-        username = client.recv(20).decode()
-
-        if username not in users_r:
-            client.send(b"Username invalid, try again.")
-            login_client(client, client_address)
-            return None
-
-        client.send(b"Password -> ")
-        password = client.recv(20).decode()
-
-        if password != users_r[username]["password"]:
-            addresses_r[client_address] += 1
-            content = json.dumps(addresses_r, indent=4)
-            write_to_file("db", "addresses.json", content, "w")
-
-            client.send(b"Password invalid.")
-            login_client(client, client_address)
-            return None
-
-        client.send(b"logged in successfully.")
-        main(client, client_address, username)
+        blacklists = open_file("db", "blacklists.json")
+        login_client(blacklists)
 
     else:
-        client.close()
+        client.send('Please enter "signup" or "login".')
+        login_client(client, client_address)
 
 
 if __name__ == "__main__":
