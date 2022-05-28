@@ -102,11 +102,6 @@ def login_client(client, client_address, blacklists):
     client.send(b"Username -> ")
     username = client.recv(20).decode()
 
-    if not (username in users_r):
-        client.send(b"Username not recogniseds, try again.")
-        login_client(client, client_address, blacklists)
-        return None
-
     client.send(b"Password -> ")
     password = client.recv(20).decode()
 
@@ -120,6 +115,7 @@ def login_client(client, client_address, blacklists):
             write_to_file("db", "addresses.json", content, "w")
 
         client.send(are_valid[1].encode())
+        register_page(client, client_address)
 
     client.send(b"logged in successfully.")
     main(client, client_address, username)
