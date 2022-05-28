@@ -18,7 +18,7 @@ def sign_up(client, client_address, functions: dict[str, object]):
     register_page(client, client_address)
 
 
-def log_in(client, client_address, functions: dict[str, object], WRONG_PASSWORD):
+def log_in(client, client_address, WRONG_PASSWORD, functions: dict[str, object]):
     main = functions["main"]
     open_file = functions["open_file"]
     register_page = functions["register_page"]
