@@ -3,6 +3,8 @@ import socket
 import inspect
 import threading
 from warnings import filterwarnings
+
+# import functions which could potentially be modified in the future
 from commands.help import help_command
 from commands.users import users_command
 
@@ -98,7 +100,7 @@ def login_client(client, client_address, blacklists):
     if not check_client_address:
         client.close()
         return None
-    
+
     addresses_r = open_file("db", "addresses.json")
     users_r = open_file("db", "users.json")
 
