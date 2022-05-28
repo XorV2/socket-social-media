@@ -72,7 +72,7 @@ def signup_client(contents):
     data = open_file("db", "users.json")
 
     client.send(b"Successfully signed up, please log in.")
-    login_client(client, client_address)
+    register_page(client, client_address)
 
 
 # -----------------
@@ -81,13 +81,13 @@ def check_client_address(client_address):
 
 
 # -----------------
-def login_client(blacklists):
+def login_client(client, client_address, blacklists):
     addresses_r = open_file("db", "addresses.json")
     users_r = open_file("db", "users.json")
 
     if not (client_address in addresses_r):
         clients_chances = addresses_r[client_address]
-        addresses_r[client_address[0]], chances = 0, 0
+        addresses_r[client_address], chances = 0, 0
 
         content = json.dumps(addresses_r, indent=4)
         write_to_file("db", "addresses.json", content, "w")
@@ -104,7 +104,7 @@ def login_client(blacklists):
 
     if not (username in users_r):
         client.send(b"Username not recogniseds, try again.")
-        login_client(blacklists)
+        login_client(client, client_address, blacklists)
         return None
 
     client.send(b"Password -> ")
@@ -166,7 +166,7 @@ def register_page(client, client_address):
         signup_client(contents)
 
     elif command == "login":
-        login_client(blacklists)
+        login_client(client, client_address, blacklists)
 
     else:
         client.send(b"Please enter 'signup' or 'login'.")
@@ -193,6 +193,5 @@ if __name__ == "__main__":
 
     while True:
         client, client_address = s.accept()
-        print(client_address)
         print(f"{client_address} accepted.")
         threading.Thread(target=register_page(client, client_address[0])).start()
