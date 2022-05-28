@@ -8,6 +8,8 @@ from warnings import filterwarnings
 from commands.help import help_command
 from commands.users import users_command
 
+from db.check import check_credidentials
+
 
 """
 the inspect module is the only one i am going to document because i'm not
@@ -42,19 +44,6 @@ def write_to_file(path, file_name, content, mode="a"):
     """
     with open(f"{path}/{file_name}", mode) as f:
         f.write(content)
-
-
-# -----------------
-def check_credidentials(username, password):
-    contents = open_file("db", "users.json")
-
-    if username not in contents:
-        return [False, "username doesn't exist"]
-
-    if password != contents[username]["password"]:
-        return [False, "password doesn't match the username"]
-
-    return [True]
 
 
 # -----------------
@@ -110,7 +99,7 @@ def login_client(client, client_address, blacklists):
     client.send(b"Password -> ")
     password = client.recv(20).decode()
 
-    are_valid = check_credidentials(username, password)
+    are_valid = check_credidentials(username, password, open_file)
 
     if not are_valid[0]:
         if are_valid[1] == WRONG_PASSWORD:
