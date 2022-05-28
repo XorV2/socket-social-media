@@ -1,3 +1,4 @@
+from atexit import register
 import socket
 import threading
 import json
@@ -17,19 +18,8 @@ this module is used to get the parameters in which will be taken by the
 function before i have to run it so instead of having to give all of my
 functions the same parameters i can just get the parameters from the module.
 """
+FILE_NAMES = {"users.json", "blacklists.json", "addresses.json"}
 filterwarnings("ignore", category=DeprecationWarning)
-
-# -----------------
-def help(client, username):
-    client.send(
-        f"""hello {username}, this is the command list:
-
-    help - this menu
-    ... - ...
-    ... - ...
-    
-    """.encode()
-    )
 
 
 # -----------------
@@ -142,8 +132,6 @@ def help_command(client, username):
 
 
 # -----------------
-
-
 def main(client, client_address, username):
     """
     the main function is for handling clients who have now logged in
@@ -169,7 +157,7 @@ def main(client, client_address, username):
             func(client, params[1])
 
 
-def login_client(client, client_address):
+def register_page(client, client_address):
     try:
         blacklists = open_file("db", "blacklists.json")
     except:
@@ -195,11 +183,24 @@ def login_client(client, client_address):
 
     elif command == "login":
         blacklists = open_file("db", "blacklists.json")
-        login_client(blacklists)
+        login_client(client, blacklists)
 
     else:
-        client.send('Please enter "signup" or "login".')
-        login_client(client, client_address)
+        client.send(b"Please enter 'signup' or 'login'.")
+        register_page(client, client_address)
+
+
+"""
+check if users.json, blacklists.json and addresses.json exist
+if they don't, create them
+"""
+
+for file_name in FILE_NAMES:
+    try:
+        open_file("db", file_name)
+    except:
+        write_to_file("db", file_name, {})
+        # write_to_file creates the file for you if it doesn't exist
 
 
 if __name__ == "__main__":
@@ -211,4 +212,4 @@ if __name__ == "__main__":
         client, client_address = s.accept()
         print(client_address)
         print(f"{client_address} accepted.")
-        threading.Thread(target=login_client(client, client_address[0])).start()
+        threading.Thread(target=register_page(client, client_address[0])).start()
