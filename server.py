@@ -21,6 +21,7 @@ function before i have to run it so instead of having to give all of my
 functions the same parameters i can just get the parameters from the module.
 """
 FILE_NAMES = {"users.json", "blacklists.json", "addresses.json"}
+WRONG_PASSWORD = "password doesn't match the username"
 filterwarnings("ignore", category=DeprecationWarning)
 
 
@@ -75,12 +76,19 @@ def signup_client(contents):
 
 
 # -----------------
+def check_client_address(client_address):
+    ...
+
+
+# -----------------
 def login_client(blacklists):
     addresses_r = open_file("db", "addresses.json")
     users_r = open_file("db", "users.json")
 
-    if client_address not in addresses_r:
+    if not (client_address in addresses_r):
+        clients_chances = addresses_r[client_address]
         addresses_r[client_address[0]], chances = 0, 0
+
         content = json.dumps(addresses_r, indent=4)
         write_to_file("db", "addresses.json", content, "w")
 
@@ -94,7 +102,7 @@ def login_client(blacklists):
     client.send(b"Username -> ")
     username = client.recv(20).decode()
 
-    if username not in users_r:
+    if not (username in users_r):
         client.send(b"Username not recogniseds, try again.")
         login_client(blacklists)
         return None
@@ -102,14 +110,16 @@ def login_client(blacklists):
     client.send(b"Password -> ")
     password = client.recv(20).decode()
 
-    if password != users_r[username]["password"]:
-        addresses_r[client_address] += 1
-        content = json.dumps(addresses_r, indent=4)
-        write_to_file("db", "addresses.json", content, "w")
+    are_valid = check_credidentials(username, password)
 
-        client.send(b"Password invalid.")
-        login_client(client, client_address)
-        return None
+    if not are_valid[0]:
+        if are_valid[1] == WRONG_PASSWORD:
+            clients_chances += 1
+
+            content = json.dumps(addresses_r, indent=4)
+            write_to_file("db", "addresses.json", content, "w")
+
+        client.send(are_valid[1].encode())
 
     client.send(b"logged in successfully.")
     main(client, client_address, username)

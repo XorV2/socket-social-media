@@ -1,2 +1,2 @@
-def user_command():
+def users_command():
     ...
