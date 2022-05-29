@@ -20,7 +20,7 @@ def sign_up(
     password = client.recv(20).decode()
 
     contents[username]["password"] = password
-    contents[username]["stats"] = {"followers": 0, "following": 0}
+    contents[username]["stats"] = {"followers": [0, []], "following": [0, []]}
 
     contents = json.dumps(contents, indent=4)
     write_to_file("db", "users.json", contents, "w")

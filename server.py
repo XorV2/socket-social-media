@@ -93,6 +93,14 @@ def main(client, client_address, username):
         elif "view" in command:
             view_command(client, command, open_file)
 
+        elif "follow" in command:
+            follow_command(
+                client,
+                username,
+                command,
+                {"open_file": open_file, "write_to_file": write_to_file},
+            )
+
         else:
             client.send(b"Invalid command.")
 
