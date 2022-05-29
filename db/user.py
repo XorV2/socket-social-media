@@ -37,7 +37,6 @@ def log_in(client, client_address, WRONG_PASSWORD, functions: dict[str, object])
 
     users_r = open_file("db", "users.json")
     addresses_r = open_file("db", "addresses.json")
-    client_chances = users_r[username]["chances"]
 
     client.send(b"Username -> ")
     username = client.recv(20).decode()
@@ -49,7 +48,7 @@ def log_in(client, client_address, WRONG_PASSWORD, functions: dict[str, object])
 
     if not are_valid[0]:
         if are_valid[1] == WRONG_PASSWORD:
-            clients_chances += 1
+            addresses_r[client_address] += 1
 
             content = json.dumps(addresses_r, indent=4)
             write_to_file("db", "addresses.json", content, "w")
