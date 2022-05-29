@@ -1,1 +1,8 @@
-{}
+{
+    "rooben": {
+        "password": "meow"
+    },
+    "john": {
+        "password": "smith"
+    }
+}

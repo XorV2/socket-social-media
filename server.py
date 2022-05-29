@@ -82,13 +82,10 @@ def main(client, client_address, username):
         command = client.recv(50).decode()
         print(f"[{username}] {command}")
 
-        try:
-            func = commands[command]
-        except:
-            client.send(b"Invalid command. Type help for help\n")
-        else:
-            params = inspect.getargspec(func)[0]
-            func(client, params[1])
+        if command == "help":
+            help_command(client, username)
+        elif command == "users":
+            users_command(client, {"open_file": open_file})
 
 
 def register_page(client, client_address):

@@ -7,9 +7,10 @@ def sign_up(
     LOGIN_FUNCS = consts["login_funcs"]
     WRONG_PASSWORD = consts["wrong_password"]
 
-    register_page = functions["register_page"]
     open_file = functions["open_file"]
     contents = open_file("db", "users.json")
+    register_page = functions["register_page"]
+    write_to_file = functions["write_to_file"]
 
     client.send(b"Username(20 characters max) -> ")
     username = client.recv(20).decode()
@@ -18,6 +19,9 @@ def sign_up(
     client.sendall(b"Password(20 characters max) -> ")
     password = client.recv(20).decode()
     contents[username]["password"] = password
+
+    contents = json.dumps(contents, indent=4)
+    write_to_file("db", "users.json", contents, "w")
 
     client.send(b"Successfully signed up, please log in.")
     log_in(client, client_address, WRONG_PASSWORD, LOGIN_FUNCS)
