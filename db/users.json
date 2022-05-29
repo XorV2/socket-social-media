@@ -2,34 +2,18 @@
     "rooben": {
         "password": "meow",
         "stats": {
-            "followers": [
-                2,
-                [
-                    "rooben",
-                    "john"
-                ]
-            ],
-            "following": [
-                1,
-                [
+            "followers": {
+                "amount": 1,
+                "usernames": [
                     "rooben"
                 ]
-            ]
-        }
-    },
-    "john": {
-        "password": "smith",
-        "stats": {
-            "followers": [
-                0,
-                []
-            ],
-            "following": [
-                1,
-                [
+            },
+            "following": {
+                "amount": 1,
+                "usernames": [
                     "rooben"
                 ]
-            ]
+            }
         }
     }
 }

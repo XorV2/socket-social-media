@@ -37,8 +37,9 @@ def view_command(client, command, open_file: object):
         return None
 
     info_about_user = users[user_to_view]["stats"]
-    info_formatted = ""
-    for key in info_about_user:
-        info_formatted += f"{key} - {info_about_user[key][0]}\n"
-
+    info_formatted = f"""
+        followers - {info_about_user["followers"]["amount"]}
+        following - {info_about_user["following"]["amount"]}
+        
+    """
     client.send(str(info_formatted).encode())

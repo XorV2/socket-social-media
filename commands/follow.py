@@ -1,25 +1,22 @@
 import json
 
 
-def _check(command):
-    """
-    the purpose of this function is to see if the command can be split by :
-    if it can, return [True, user_to_follow], if not, return [False]
-    """
+class priv_funcs:
+    @staticmethod
+    def _check(command):
+        try:
+            user_to_follow = command.split(":")[1]
+        except:
+            return {"is_split": False}
+        else:
+            return {"is_split": True, "user_to_follow": user_to_follow}
 
-    try:
-        user_to_follow = command.split(":")[1]
-    except:
-        return [False]
-    else:
-        return [True, user_to_follow]
-
-
-def _check_db(content, file, mode="in"):
-    if mode == "in":
-        if content in file:
-            return True
-        return False
+    @staticmethod
+    def _check_db(content, file, mode="in"):
+        if mode == "in":
+            if content in file:
+                return True
+            return False
 
 
 def follow_command(client, username, command, functions: dict[str, object]):
@@ -27,23 +24,22 @@ def follow_command(client, username, command, functions: dict[str, object]):
     write_to_file = functions["write_to_file"]
 
     users = open_file("db", "users.json")
-    split_command = _check(command)
+    checked_info = priv_funcs._check(command)
 
-    if not split_command[0]:
+    if not checked_info["is_split"]:
         client.send(b"Please use this format, follow:username")
         return None
 
-    user_to_follow = split_command[1]
+    user_to_follow = checked_info["user_to_follow"]
 
-    if not _check_db(user_to_follow, users, "in"):
+    if not priv_funcs._check_db(user_to_follow, users, "in"):
         client.send(b"User does not exist.")
         return None
 
     client_following = users[username]["stats"]["following"]
-    user_followers = users[user_to_follow]["stats"]["followers"]
     # this is a bit of a jumble, fix it.
 
-    if _check_db(user_to_follow, client_following[1], "in"):
+    if priv_funcs._check_db(user_to_follow, client_following["usernames"], "in"):
         client.send(b"you are already following this user.".encode())
         return None
 
@@ -54,12 +50,11 @@ def follow_command(client, username, command, functions: dict[str, object]):
     then add one to the followed users followers and append the user who
     followed them into their list of people who follow them.
     """
-    users[username]["stats"]["following"][0] += 1
-    users[username]["stats"]["following"][1].append(user_to_follow)
+    users[username]["stats"]["following"]["amount"] += 1
+    users[username]["stats"]["following"]["usernames"].append(user_to_follow)
 
-    users[user_to_follow]["stats"]["followers"][0] += 1
-    users[user_to_follow]["stats"]["followers"][1].append(username)
+    users[user_to_follow]["stats"]["followers"]["amount"] += 1
+    users[user_to_follow]["stats"]["followers"]["usernames"].append(username)
 
     content = json.dumps(users, indent=4)
-
     write_to_file("db", "users.json", content, "w")
