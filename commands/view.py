@@ -38,8 +38,9 @@ def view_command(client, command, open_file: object):
 
     info_about_user = users[user_to_view]["stats"]
     info_formatted = f"""
+    {user_to_view}:
         followers - {info_about_user["followers"]["amount"]}
         following - {info_about_user["following"]["amount"]}
-        
+
     """
     client.send(str(info_formatted).encode())
