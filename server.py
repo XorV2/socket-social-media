@@ -93,7 +93,6 @@ def main(client, client_address, username):
 
 def register_page(client, client_address):
     blacklists = open_file("db", "blacklists.json")
-    contents = open_file("db", "users.json")
 
     if client_address in blacklists:
         client.close()
