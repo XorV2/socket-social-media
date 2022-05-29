@@ -85,10 +85,13 @@ def main(client, client_address, username):
 
         if command == "help":
             help_command(client, username)
+
         elif command == "users":
             users_command(client, {"open_file": open_file})
+
         elif "view" in command:
             view_command(client, command, open_file)
+
         else:
             client.send(b"Invalid command.")
 

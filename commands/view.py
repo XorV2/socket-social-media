@@ -1,14 +1,22 @@
+"""
+Update this function to allow that
+'password':'somepassword'
+
+doesn't exist and it shows the stats of the user.
+"""
+
+
 def _check(command):
     """
     this functions purpose is to check that the command can be split with :
     if it can, return [True, split_command], if not, return [False]
     """
     try:
-        split_command = command.split(":")
+        username = command.split(":")[1]
     except:
         return [False]
     else:
-        return [True, split_command]
+        return [True, username]
 
 
 def view_command(client, command, open_file):
@@ -25,5 +33,5 @@ def view_command(client, command, open_file):
         client.send(f"User {user_to_view} does not exist.".encode())
         return None
 
-    info_about_user = users["username"]
-    client.send(info_about_user.encode())
+    info_about_user = users[user_to_view]
+    client.send(str(info_about_user).encode())
