@@ -35,8 +35,9 @@ def log_in(client, client_address, WRONG_PASSWORD, functions: dict[str, object])
         client.close()
         return None
 
-    addresses_r = open_file("db", "addresses.json")
     users_r = open_file("db", "users.json")
+    addresses_r = open_file("db", "addresses.json")
+    client_chances = users_r[username]["chances"]
 
     client.send(b"Username -> ")
     username = client.recv(20).decode()
