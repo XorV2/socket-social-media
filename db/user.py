@@ -1,7 +1,12 @@
 import json
 
 
-def sign_up(client, client_address, functions: dict[str, object]):
+def sign_up(
+    client, client_address, functions: dict[str, object], consts: dict[str, object]
+):
+    LOGIN_FUNCS = consts["login_funcs"]
+    WRONG_PASSWORD = consts["wrong_password"]
+
     register_page = functions["register_page"]
     open_file = functions["open_file"]
     contents = open_file("db", "users.json")
@@ -15,7 +20,7 @@ def sign_up(client, client_address, functions: dict[str, object]):
     contents[username]["password"] = password
 
     client.send(b"Successfully signed up, please log in.")
-    register_page(client, client_address)
+    log_in(client, client_address, WRONG_PASSWORD, LOGIN_FUNCS)
 
 
 def log_in(client, client_address, WRONG_PASSWORD, functions: dict[str, object]):

@@ -106,28 +106,28 @@ def register_page(client, client_address):
         sign_up(
             client,
             client_address,
-            {"open_file": open_file, "register_page": register_page},
+            LOGIN_FUNCS,
+            {"login_funcs": LOGIN_FUNCS, "wrong_password": WRONG_PASSWORD},
         )
 
     elif command == "login":
-        log_in(
-            client,
-            client_address,
-            WRONG_PASSWORD,
-            {
-                "main": main,
-                "open_file": open_file,
-                "register_page": register_page,
-                "write_to_file": write_to_file,
-                "check_credidentials": check_credidentials,
-                "check_client_address": check_client_address,
-            },
-        )
+        log_in(client, client_address, WRONG_PASSWORD, LOGIN_FUNCS)
 
     else:
         client.send(b"Please enter 'signup' or 'login'.")
         register_page(client, client_address)
 
+
+SIGNUP_FUNCS = {"open_file": open_file, "register_page": register_page}
+
+LOGIN_FUNCS = {
+    "main": main,
+    "open_file": open_file,
+    "register_page": register_page,
+    "write_to_file": write_to_file,
+    "check_credidentials": check_credidentials,
+    "check_client_address": check_client_address,
+}
 
 """
 check if users.json, blacklists.json and addresses.json exist
