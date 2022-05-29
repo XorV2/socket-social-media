@@ -19,7 +19,7 @@ def _check(command):
         return [True, username]
 
 
-def view_command(client, command, open_file):
+def view_command(client, command, open_file: object):
     users = open_file("db", "users.json")
 
     split_command = _check(command)

@@ -8,6 +8,7 @@ from warnings import filterwarnings
 from commands.help import help_command
 from commands.view import view_command
 from commands.users import users_command
+from commands.follow import follow_command
 
 from db.user import sign_up, log_in
 from db.check import check_credidentials
