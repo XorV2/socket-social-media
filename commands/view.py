@@ -1,8 +1,11 @@
 """
-Update this function to allow that
-'password':'somepassword'
-
-doesn't exist and it shows the stats of the user.
+This code sucks to read, and look gross
+i'll fix this...
+...
+...
+..
+.
+eventually...
 """
 
 
