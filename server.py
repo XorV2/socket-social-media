@@ -6,6 +6,7 @@ from warnings import filterwarnings
 
 # import functions which could potentially be modified in the future
 from commands.help import help_command
+from commands.view import view_command
 from commands.users import users_command
 
 from db.user import sign_up, log_in
@@ -86,8 +87,10 @@ def main(client, client_address, username):
             help_command(client, username)
         elif command == "users":
             users_command(client, {"open_file": open_file})
+        elif "view" in command:
+            view_command(client, command, open_file)
         else:
-            client.send(b'Invalid command.')
+            client.send(b"Invalid command.")
 
 
 def register_page(client, client_address):
