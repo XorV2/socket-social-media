@@ -2,7 +2,6 @@ import json
 import socket
 import inspect
 import threading
-from warnings import filterwarnings
 
 # import functions which could potentially be modified in the future
 from commands.help import help_command
@@ -14,22 +13,8 @@ from db.user import sign_up, log_in
 from db.check import check_credidentials
 
 
-"""
-the inspect module is the only one i am going to document because i'm not
-familiar with it and i would assume that alot of other people aren't as
-well
-
-the inspect module is the one i'm using for my command handling, as my
-functions take different parameters depending on what the point of the
-function is
-
-this module is used to get the parameters in which will be taken by the
-function before i have to run it so instead of having to give all of my
-functions the same parameters i can just get the parameters from the module.
-"""
 FILE_NAMES = {"users.json", "blacklists.json", "addresses.json"}
 WRONG_PASSWORD = "password doesn't match the username"
-filterwarnings("ignore", category=DeprecationWarning)
 
 
 # -----------------
