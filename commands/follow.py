@@ -1,3 +1,6 @@
+import json
+
+
 def _check(command):
     """
     the purpose of this function is to see if the command can be split by :
@@ -56,5 +59,7 @@ def follow_command(client, username, command, functions: dict[str, object]):
 
     users[user_to_follow]["stats"]["followers"][0] += 1
     users[user_to_follow]["stats"]["followers"][1].append(username)
+
+    content = json.dumps(users, indent=4)
 
     write_to_file("db", "users.json", users, "w")
