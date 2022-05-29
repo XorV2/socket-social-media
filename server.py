@@ -86,6 +86,8 @@ def main(client, client_address, username):
             help_command(client, username)
         elif command == "users":
             users_command(client, {"open_file": open_file})
+        else:
+            client.send(b'Invalid command.')
 
 
 def register_page(client, client_address):
