@@ -1,0 +1,35 @@
+{
+    "rooben": {
+        "password": "meow",
+        "stats": {
+            "followers": [
+                2,
+                [
+                    "rooben",
+                    "john"
+                ]
+            ],
+            "following": [
+                1,
+                [
+                    "rooben"
+                ]
+            ]
+        }
+    },
+    "john": {
+        "password": "smith",
+        "stats": {
+            "followers": [
+                0,
+                []
+            ],
+            "following": [
+                1,
+                [
+                    "rooben"
+                ]
+            ]
+        }
+    }
+}

@@ -33,5 +33,9 @@ def view_command(client, command, open_file: object):
         client.send(f"User {user_to_view} does not exist.".encode())
         return None
 
-    info_about_user = users[user_to_view]
-    client.send(str(info_about_user).encode())
+    info_about_user = users[user_to_view]["stats"]
+    info_formatted = ""
+    for key in info_about_user:
+        info_formatted += f"{key} - {info_about_user[key][0]}\n"
+
+    client.send(str(info_formatted).encode())
