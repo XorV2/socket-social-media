@@ -62,4 +62,4 @@ def follow_command(client, username, command, functions: dict[str, object]):
 
     content = json.dumps(users, indent=4)
 
-    write_to_file("db", "users.json", users, "w")
+    write_to_file("db", "users.json", content, "w")
