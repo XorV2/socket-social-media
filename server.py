@@ -96,6 +96,7 @@ def main(client, client_address, username):
             client.send(b"Invalid command.")
 
 
+# -----------------
 def register_page(client, client_address):
     blacklists = open_file("db", "blacklists.json")
 
