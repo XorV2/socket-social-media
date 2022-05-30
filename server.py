@@ -56,7 +56,7 @@ def check_client_address(username, client_address):
 
     addresses_r = open_file("db", "addresses.json")
 
-    if not (client_address in addresses_r):
+    if username not in addresses_r:
         addresses_r[username] = {"client_address": client_address, "chances": 0}
         content = json.dumps(addresses_r, indent=4)
 
@@ -76,6 +76,10 @@ def main(client, client_address, username):
     the main function is for handling clients who have now logged in
     handling their traffic and allowing them to give commands
     """
+
+    # now there are some errors with this which i will address in readMe.md
+    if check_client_address(username, client_address) == False:
+        client.send(b"You have been blacklisted.")
 
     print(f"{client_address} has logged in.")
 
@@ -110,12 +114,6 @@ def main(client, client_address, username):
 
 # -----------------
 def register_page(client, client_address):
-    blacklists = open_file("db", "blacklists.json")
-
-    if client_address in blacklists:
-        client.close()
-        return -1
-
     client.send(b"signup or login ->")
     command = client.recv(6).decode()
 
@@ -143,7 +141,6 @@ LOGIN_FUNCS = {
     "register_page": register_page,
     "write_to_file": write_to_file,
     "check_credidentials": check_credidentials,
-    "check_client_address": check_client_address,
 }
 
 """
