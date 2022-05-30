@@ -32,17 +32,14 @@ def sign_up(
     log_in(client, client_address, WRONG_PASSWORD, LOGIN_FUNCS)
 
 
-def log_in(client, client_address, WRONG_PASSWORD, functions: dict[str, object]):
+def log_in(
+    username, client, client_address, WRONG_PASSWORD, functions: dict[str, object]
+):
     main = functions["main"]
     open_file = functions["open_file"]
     register_page = functions["register_page"]
     write_to_file = functions["write_to_file"]
     check_credidentials = functions["check_credidentials"]
-    check_client_address = functions["check_client_address"]
-
-    if not check_client_address:
-        client.close()
-        return None
 
     users_r = open_file("db", "users.json")
     addresses_r = open_file("db", "addresses.json")
