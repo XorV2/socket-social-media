@@ -32,9 +32,7 @@ def sign_up(
     log_in(client, client_address, WRONG_PASSWORD, LOGIN_FUNCS)
 
 
-def log_in(
-    username, client, client_address, WRONG_PASSWORD, functions: dict[str, object]
-):
+def log_in(client, client_address, WRONG_PASSWORD, functions: dict[str, object]):
     main = functions["main"]
     open_file = functions["open_file"]
     register_page = functions["register_page"]

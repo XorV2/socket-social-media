@@ -1,24 +1,30 @@
 import json
 import socket
-import inspect
 import threading
 
 # import functions which could potentially be modified in the future
-from commands.help import help_command
-from commands.view import view_command
-from commands.users import users_command
 from commands.follow import follow_command
+from commands.help import help_command
+from commands.unfollow import unfollow_command
+from commands.users import users_command
+from commands.view import view_command
 
-from db.user import sign_up, log_in
 from db.check import check_credidentials
-
+from db.user import log_in, sign_up
 
 FILE_NAMES = {"users.json", "blacklists.json", "addresses.json"}
 WRONG_PASSWORD = "password doesn't match the username"
+CLIENT_ERROR = WindowsError
 
 
 # -----------------
 def open_file(path, file_name):
+    """
+    this function opens a file and returns the opened file allowing
+    to read it
+
+    the parameters path and file_name exist for flexibility.
+    """
     with open(f"{path}/{file_name}", "r") as f:
         opened_file = json.load(f)
 
@@ -28,10 +34,13 @@ def open_file(path, file_name):
 # -----------------
 def write_to_file(path, file_name, content, mode="a"):
     """
+    this function simply writes to a file, the parameters path, file_name
+    allow for flexibility in-case they change.
+
     default mode set to append in-case file doesn't exist.
     """
     with open(f"{path}/{file_name}", mode) as f:
-        f.write(content)
+        f.write(str(content))
 
 
 # -----------------
@@ -63,7 +72,7 @@ def check_client_address(username, client_address):
         write_to_file("db", "addresses.json", content, "w")
         return True
 
-    chances = addresses_r[client_address]["chances"]
+    chances = addresses_r[username]["chances"]
 
     if chances == 3:
         return False
@@ -77,43 +86,66 @@ def main(client, client_address, username):
     handling their traffic and allowing them to give commands
     """
 
-    # now there are some errors with this which i will address in readMe.md
-    if check_client_address(username, client_address) == False:
-        client.send(b"You have been blacklisted.")
+    try:
+        # now there are some errors with this which i will address in readMe.md
+        if check_client_address(username, client_address) == False:
+            client.send(b"You have been blacklisted.")
 
-    print(f"{client_address} has logged in.")
+        print(f"{client_address} has logged in.")
 
-    commands = {"help": help_command, "users": users_command}
-    file = open_file("db", "users.json")
+        while True:
+            client.send(f"[{username}] -> ".encode())
+            command = client.recv(50).decode()
+            print(f"[{username}] {command}")
 
-    while True:
-        client.send(f"[{username}] -> ".encode())
-        command = client.recv(50).decode()
-        print(f"[{username}] {command}")
+            if command == "help":
+                help_command(client, username)
 
-        if command == "help":
-            help_command(client, username)
+            elif command == "users":
+                users_command(client, {"open_file": open_file})
 
-        elif command == "users":
-            users_command(client, {"open_file": open_file})
+            elif "view" in command:
+                view_command(client, command, open_file)
 
-        elif "view" in command:
-            view_command(client, command, open_file)
+            elif "unfollow" in command:
+                unfollow_command(
+                    client,
+                    username,
+                    command,
+                    {"open_file": open_file, "write_to_file": write_to_file},
+                )
 
-        elif "follow" in command:
-            follow_command(
-                client,
-                username,
-                command,
-                {"open_file": open_file, "write_to_file": write_to_file},
-            )
+            elif "follow" in command:
+                follow_command(
+                    client,
+                    username,
+                    command,
+                    {"open_file": open_file, "write_to_file": write_to_file},
+                )
 
-        else:
-            client.send(b"Invalid command.")
+            else:
+                client.send(b"Invalid command.")
+    except CLIENT_ERROR:
+        print(f"{client_address} Threw an error.")
 
 
 # -----------------
 def register_page(client, client_address):
+    """
+    The page where you register,
+
+    signup or login -> signup
+
+    username -> ...
+    password -> ...
+
+    this then redirects you to the login page
+
+    username -> ...
+    password -> ...
+
+    ...
+    """
     client.send(b"signup or login ->")
     command = client.recv(6).decode()
 

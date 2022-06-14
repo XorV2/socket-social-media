@@ -3,16 +3,12 @@
         "password": "meow",
         "stats": {
             "followers": {
-                "amount": 1,
-                "usernames": [
-                    "rooben"
-                ]
+                "amount": 0,
+                "usernames": []
             },
             "following": {
-                "amount": 1,
-                "usernames": [
-                    "rooben"
-                ]
+                "amount": 0,
+                "usernames": []
             }
         }
     }

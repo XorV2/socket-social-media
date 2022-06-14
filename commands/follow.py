@@ -40,7 +40,7 @@ def follow_command(client, username, command, functions: dict[str, object]):
     # this is a bit of a jumble, fix it.
 
     if priv_funcs._check_db(user_to_follow, client_following["usernames"], "in"):
-        client.send(b"you are already following this user.".encode())
+        client.send(b"you are already following this user.")
         return None
 
     """

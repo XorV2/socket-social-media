@@ -38,7 +38,7 @@ def unfollow_command(client, username, command, functions: dict[str, object]):
 
     client_following = users[username]["stats"]["following"]
 
-    if not priv_funcs._check_db(user_to_unfollow, client_following[1], "in"):
+    if not priv_funcs._check_db(user_to_unfollow, client_following["usernames"], "in"):
         client.send(b"Sorry, you cant unfollow someone youre not following")
 
     users[username]["stats"]["following"]["amount"] += 1
@@ -48,4 +48,4 @@ def unfollow_command(client, username, command, functions: dict[str, object]):
     users[user_to_unfollow]["stats"]["followers"]["usernames"].remove(username)
 
     content = json.dumps(users, indent=4)
-    write_to_file("db", "users.json", users)
+    write_to_file("db", "users.json", content)
